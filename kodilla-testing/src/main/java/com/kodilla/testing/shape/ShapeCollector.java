@@ -12,19 +12,28 @@ public class ShapeCollector {
     }
 
     public void addFigure(Shape shape){
-        //before implementation
+        this.listOfShapes.add(shape);
     }
 
     public boolean removeFigure(Shape shape){
-        return true; //before implementation
+        if(this.listOfShapes.contains(shape)){
+            this.listOfShapes.remove(shape);
+            return true;
+        }
+        return false;
     }
 
     public Shape getFigure(int n){
-        return null; //before implementation
+        if(n<0 || n>this.listOfShapes.size()) return null;
+        return  this.listOfShapes.get(n);
     }
 
     public String showFigures(){
-        return null; //before implementation
+        String result = "";
+        for (Shape shape : listOfShapes) {
+            result += shape.getShapeName();
+        }
+        return result;
     }
 
 }
