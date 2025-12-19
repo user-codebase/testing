@@ -1,75 +1,43 @@
 package com.kodilla.stream;
 
-import com.kodilla.stream.beautifier.PoemBeautifier;
-import com.kodilla.stream.iterate.NumbersGenerator;
-import com.kodilla.stream.lambda.ExecuteSaySomething;
-import com.kodilla.stream.lambda.ExpressionExecutor;
-import com.kodilla.stream.lambda.Processor;
-import com.kodilla.stream.lambda.SaySomething;
-import com.kodilla.stream.reference.FunctionalCalculator;
+import com.kodilla.stream.forumuser.Forum;
+import com.kodilla.stream.forumuser.ForumUser;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StreamMain {
     public static void main(String[] args) {
-        System.out.println("Welcome to module 7 - Stream");
 
-        SaySomething saySomething = new SaySomething();
-        saySomething.say();
+        Random random = new Random();
 
-        Processor processor = new Processor();
-        processor.execute(() -> System.out.println("This is an example test."));
+        // List with random Users
+        List<ForumUser> forumUserList = new ArrayList<>();
+        for (int i = 0; i < 40; i++) {
+            String userName = "User" + i;
+            int randomYear = random.nextInt(25) + 2000;
+            int randomMonth = random.nextInt(12) + 1;
+            int randomDay = random.nextInt(28) + 1;
+            int randomNumberOfPosts = random.nextInt(40);
 
-        ExpressionExecutor expressionExecutor = new ExpressionExecutor();
-
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a + b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a - b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a * b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a / b);
-
-        expressionExecutor.executeExpression(10, 5, FunctionalCalculator::addAToB);
-        expressionExecutor.executeExpression(10, 5, FunctionalCalculator::subBFromA);
-        expressionExecutor.executeExpression(10, 5, FunctionalCalculator::multiplyAByB);
-        expressionExecutor.executeExpression(10, 5, FunctionalCalculator::divideAByB);
-
-
-
-        // Zadanie 7.1
-        PoemBeautifier poemBeautifier = new PoemBeautifier();
-
-        // Example 1
-        String beautifulText1 = poemBeautifier.beautify("Hello World", txt -> "ABC" + txt + "ABC");
-        System.out.println("beautifulText1: " + beautifulText1);
-
-        // Example 2
-        String beautifulText2 = poemBeautifier.beautify("Hello World", String::toUpperCase);
-        System.out.println("beautifulText2: " + beautifulText2);
-
-        // Example 3
-        String beautifulText3 = poemBeautifier.beautify("Hello World", txt -> {
-            char[] chars = txt.toCharArray();
-            String[] arrayWithString = new String[chars.length];
-            for (int i = 0; i < chars.length; i++) {
-                arrayWithString[i] = String.valueOf(chars[i]);
+            if (i%2==0) {
+                forumUserList.add(new ForumUser(i, userName, 'M', LocalDate.of(randomYear, randomMonth, randomDay), randomNumberOfPosts));
+            }else{
+                forumUserList.add(new ForumUser(i, userName, 'F', LocalDate.of(randomYear, randomMonth, randomDay), randomNumberOfPosts));
             }
-            return String.join("-", arrayWithString);
-        });
-        System.out.println("beautifulText3: " + beautifulText3);
+        }
 
+        Forum forum = new Forum(forumUserList);
+        Map<Integer, ForumUser> mapWithUsers = forum.getUserList().stream()
+                .filter(forumUser -> forumUser.getSex() == 'M')
+                .filter(forumUser -> forumUser.getDateOfBirth().isBefore(LocalDate.now().minusYears(20)))
+                .filter(forumUser -> forumUser.getNumberOfPosts() >= 1)
+                .collect(Collectors.toMap(ForumUser::getId, userForumUser -> userForumUser));
 
-        // Example 4
-        String beautifulText4 = poemBeautifier.beautify("Hello World", txt -> {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < txt.length(); i++) {
-                if (i%2 == 0) builder.append(Character.toUpperCase(txt.charAt(i)));
-                else builder.append(Character.toLowerCase(txt.charAt(i)));
-            }
-            return builder.toString();
-        });
-        System.out.println("beautifulText4: " + beautifulText4);
-
-
-        StreamMain streamMain = new StreamMain();
-        System.out.println("Using Stream to generate even numbers from 1 to 20");
-        NumbersGenerator.generateEven(20);
+        mapWithUsers.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .forEach(System.out::println);
 
     }
 }
