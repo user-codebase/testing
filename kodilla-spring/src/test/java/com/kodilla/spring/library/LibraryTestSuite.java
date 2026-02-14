@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = LibraryTestSuite.TestConfig.class)
+@ContextConfiguration(classes = LibraryConfig.class)
 class LibraryTestSuite {
 
     @Autowired
@@ -62,8 +64,18 @@ class LibraryTestSuite {
         //do nothing
     }
 
-    @Configuration
-    @ComponentScan("com.kodilla.spring")
-    static class TestConfig {
+    @Test
+    void testContext() {
+        //Given
+//        ApplicationContext context =
+//                new AnnotationConfigApplicationContext(LibraryConfig.class);
+        ApplicationContext context =
+                new AnnotationConfigApplicationContext("com.kodilla.spring");
+
+        //When & Then
+        System.out.println("===== Beans list: ==== >>");
+        Arrays.stream(context.getBeanDefinitionNames())
+                .forEach(System.out::println);
+        System.out.println("<< ===== Beans list ====");
     }
 }
