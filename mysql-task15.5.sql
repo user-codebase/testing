@@ -1,0 +1,28 @@
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (1, "Task 15.5 - New Post 1");
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (2, "Task 15.5 - New Post 2");
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (4, "Task 15.5 - New Post 3");
+
+UPDATE POSTS
+SET BODY = "To delete"
+WHERE BODY = "Task 15.5 - New Post 1";
+
+UPDATE POSTS
+SET BODY = "To delete"
+WHERE BODY = "Task 15.5 - New Post 2";
+
+UPDATE POSTS
+SET BODY = "To delete"
+WHERE BODY = "Task 15.5 - New Post 3";
+
+DELETE FROM POSTS
+WHERE ID = LAST_INSERT_ID();
+
+DELETE FROM POSTS
+WHERE BODY = "To delete";
+
+COMMIT;
