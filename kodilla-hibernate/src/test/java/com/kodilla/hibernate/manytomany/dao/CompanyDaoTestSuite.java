@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
@@ -14,6 +17,9 @@ class CompanyDaoTestSuite {
 
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private EmployeeDao employeeDao;
 
     @Test
     void testSaveManyToMany() {
@@ -59,5 +65,58 @@ class CompanyDaoTestSuite {
         } catch (Exception e) {
             //do nothing
         }
+    }
+
+    @Test
+    void testRetrieveCompanyByFirstThreeLetters() {
+        // Given
+        Company company1 = new Company("Software Machine");
+        Company company2 = new Company("Soft Solutions");
+        Company company3 = new Company("Hardware Factory");
+
+        companyDao.save(company1);
+        companyDao.save(company2);
+        companyDao.save(company3);
+
+        // When
+        List<Company> result = companyDao.retrieveCompanyByFirstThreeLetters("Sof");
+        int company1ID = company1.getId();
+        int company2ID = company2.getId();
+        int company3ID = company3.getId();
+
+
+        // Then
+        assertEquals(2, result.size());
+
+        // CleanUp
+        companyDao.deleteById(company1ID);
+        companyDao.deleteById(company2ID);
+        companyDao.deleteById(company3ID);
+    }
+
+    @Test
+    void testRetrieveEmployeeByLastName() {
+        // Given
+        Employee emp1 = new Employee("John", "Smith");
+        Employee emp2 = new Employee("Mike", "Smith");
+        Employee emp3 = new Employee("Anna", "Brown");
+
+        employeeDao.save(emp1);
+        employeeDao.save(emp2);
+        employeeDao.save(emp3);
+
+        // When
+        List<Employee> result = employeeDao.retrieveEmployeeByLastName("Smith");
+        int emp1ID = emp1.getId();
+        int emp2ID = emp2.getId();
+        int emp3ID = emp3.getId();
+
+        // Then
+        assertEquals(2, result.size());
+
+        // CleanUp
+        employeeDao.deleteById(emp1ID);
+        employeeDao.deleteById(emp2ID);
+        employeeDao.deleteById(emp3ID);
     }
 }

@@ -6,6 +6,13 @@ import org.antlr.v4.runtime.misc.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@NamedQueries({
+        @NamedQuery(
+                name = "Employee.retrieveEmployeeByLastName",
+                query = "FROM Employee WHERE lastname = :LAST_NAME"
+        )
+})
 @Entity
 @Table(name = "EMPLOYEES")
 public class Employee {
