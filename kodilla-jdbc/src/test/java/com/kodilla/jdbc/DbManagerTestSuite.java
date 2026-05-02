@@ -97,4 +97,140 @@ class DbManagerTestSuite {
         statement.close();
         assertEquals(1, counter);
     }
+
+    @Test
+    public void testBooksInsertTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM BOOKS_AUD");
+
+        // When
+        stmt.executeUpdate("INSERT INTO BOOKS (TITLE, PUBYEAR, BESTSELLER) VALUES ('TestBook', 2024, 0)");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM BOOKS_AUD WHERE EVENT_TYPE='INSERT'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
+
+    @Test
+    public void testBooksUpdateTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM BOOKS_AUD");
+        stmt.executeUpdate("INSERT INTO BOOKS (TITLE, PUBYEAR, BESTSELLER) VALUES ('OldTitle', 2000, 0)");
+
+        // When
+        stmt.executeUpdate("UPDATE BOOKS SET TITLE='NewTitle' WHERE TITLE='OldTitle'");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM BOOKS_AUD WHERE EVENT_TYPE='UPDATE'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
+
+    @Test
+    public void testBooksDeleteTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM BOOKS_AUD");
+        stmt.executeUpdate("INSERT INTO BOOKS (TITLE, PUBYEAR, BESTSELLER) VALUES ('ToDelete', 2001, 0)");
+
+        // When
+        stmt.executeUpdate("DELETE FROM BOOKS WHERE TITLE='ToDelete'");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM BOOKS_AUD WHERE EVENT_TYPE='DELETE'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
+
+    @Test
+    public void testReadersInsertTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM READERS_AUD");
+
+        // When
+        stmt.executeUpdate("INSERT INTO READERS (FIRSTNAME, LASTNAME, PESELID, VIP_LEVEL) VALUES ('Jan', 'Kowalski', '12345678901', 'Standard')");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM READERS_AUD WHERE EVENT_TYPE='INSERT'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
+
+    @Test
+    public void testReadersUpdateTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM READERS_AUD");
+        stmt.executeUpdate("INSERT INTO READERS (FIRSTNAME, LASTNAME, PESELID, VIP_LEVEL) VALUES ('Anna', 'Nowak', '98765432109', 'Standard')");
+
+        // When
+        stmt.executeUpdate("UPDATE READERS SET VIP_LEVEL='Gold' WHERE FIRSTNAME='Anna'");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM READERS_AUD WHERE EVENT_TYPE='UPDATE'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
+
+    @Test
+    public void testReadersDeleteTrigger() throws SQLException {
+        DbManager dbManager = DbManager.getInstance();
+        Statement stmt = dbManager.getConnection().createStatement();
+
+        // Given
+        stmt.executeUpdate("DELETE FROM READERS_AUD");
+        stmt.executeUpdate("INSERT INTO READERS (FIRSTNAME, LASTNAME, PESELID, VIP_LEVEL) VALUES ('Piotr', 'Zielinski', '11111111111', 'Standard')");
+
+        // When
+        stmt.executeUpdate("DELETE FROM READERS WHERE FIRSTNAME='Piotr'");
+
+        // Then
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS CNT FROM READERS_AUD WHERE EVENT_TYPE='DELETE'");
+        rs.next();
+        int count = rs.getInt("CNT");
+
+        assertEquals(1, count);
+
+        rs.close();
+        stmt.close();
+    }
 }
