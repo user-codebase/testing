@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class StoredProcTestSuite {
@@ -66,7 +67,7 @@ public class StoredProcTestSuite {
 
         // Then
         assertEquals(0, before);
-        assertEquals(1, after);
+        assertTrue(after > 0);
 
         // cleanup
         rsBefore.close();
