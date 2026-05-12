@@ -31,7 +31,7 @@ public class CrudAppTestingApp{
 
 
 //        WebElement selectCombo = driver.findElement(By.xpath(XPATH_SELECT));
-        WebDriverWait wait =  new WebDriverWait(driver, 1);
+        WebDriverWait wait =  new WebDriverWait(driver, Duration.ofSeconds(1));
         WebElement selectCombo = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath(XPATH_SELECT))
         );

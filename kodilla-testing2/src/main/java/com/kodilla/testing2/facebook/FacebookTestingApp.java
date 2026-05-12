@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class FacebookTestingApp {
@@ -19,7 +20,7 @@ public class FacebookTestingApp {
                 WebDriverConfig.getDriver(WebDriverConfig.CHROME);
 
         WebDriverWait wait =
-                new WebDriverWait(driver, 15);
+                new WebDriverWait(driver, Duration.ofSeconds(15));
 
         try {
             driver.get("https://www.facebook.com/");
