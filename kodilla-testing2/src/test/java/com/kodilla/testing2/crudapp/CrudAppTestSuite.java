@@ -32,7 +32,7 @@ public class CrudAppTestSuite {
         driver.quit();
     }
 
-    private String createCrudAppTestTask() throws InterruptedException {
+    private String createCrudAppTestTask() {
         final String XPATH_TASK_NAME = "//form[contains(@action,\"createTask\")]/fieldset[1]/input";
         final String XPATH_TASK_CONTENT = "//form[contains(@action,\"createTask\")]/fieldset[2]/textarea";
         final String XPATH_ADD_BUTTON = "//form[contains(@action,\"createTask\")]/fieldset[3]/button";
@@ -47,13 +47,18 @@ public class CrudAppTestSuite {
 
         WebElement addButton = driver.findElement(By.xpath(XPATH_ADD_BUTTON));
         addButton.click();
-        Thread.sleep(2000);
+
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.numberOfElementsToBeMoreThan(
+                        By.xpath("//p[contains(.,'" + taskName + "')]"),
+                        0
+                ));
 
         return taskName;
     }
 
 
-    private void deleteCrudAppTestTask(String taskName) throws InterruptedException {
+    private void deleteCrudAppTestTask(String taskName) {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -71,7 +76,10 @@ public class CrudAppTestSuite {
 
         deleteButton.click();
 
-        Thread.sleep(3000);
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.invisibilityOfElementLocated(
+                        By.xpath("//p[contains(.,'" + taskName + "')]")
+                ));
 
         System.out.println(
                 driver.findElements(By.xpath("//p[contains(.,'" + taskName + "')]")).size()
@@ -80,7 +88,7 @@ public class CrudAppTestSuite {
     }
 
 
-    private void sendTestTaskToTrello(String taskName) throws InterruptedException {
+    private void sendTestTaskToTrello(String taskName) {
         driver.navigate().refresh();
 
 
@@ -112,8 +120,8 @@ public class CrudAppTestSuite {
                         System.out.println("No alert appeared");
                     }
                 });
-        Thread.sleep(5000);
     }
+
 
     @Test
     public void shouldCreateTrelloCard() throws InterruptedException {
@@ -150,7 +158,13 @@ public class CrudAppTestSuite {
                 )
         );
 
-        passwordInput.sendKeys("Qaz!2qaz");
+        String password = System.getenv("TRELLO_PASSWORD");
+
+        if (password == null || password.isEmpty()) {
+            throw new IllegalStateException("TRELLO_PASSWORD env variable is missing");
+        }
+
+        passwordInput.sendKeys(password);
 
         WebElement el = driverTrello.findElement(By.id("login-submit"));
         el.submit();
