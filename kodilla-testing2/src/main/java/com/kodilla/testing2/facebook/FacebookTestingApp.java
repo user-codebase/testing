@@ -32,13 +32,13 @@ public class FacebookTestingApp {
                         By.xpath("//div[@role='dialog']")
                 ));
 
-                List<WebElement> cookies = driver.findElements(
-                        By.xpath("//div[@role='button' and contains(@aria-label,'cookie')]")
+                WebElement acceptCookies = wait.until(
+                        ExpectedConditions.elementToBeClickable(
+                                By.xpath("//div[@role='button' and @aria-label='Allow all cookies' and @tabindex='0']")
+                        )
                 );
 
-                if (cookies.size() >= 5) {
-                    cookies.get(4).click();
-                }
+                acceptCookies.click();
 
             } catch (Exception e) {
                 // jeśli nie ma cookies - ignorujemy
@@ -57,28 +57,40 @@ public class FacebookTestingApp {
                         By.xpath("//div[@role='dialog']")
                 ));
 
-                List<WebElement> buttons = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
-                        By.xpath("//div[@role='button' and contains(@aria-label,'cookie')]")
-                ));
+                WebElement acceptCookies = wait.until(
+                        ExpectedConditions.elementToBeClickable(
+                                By.xpath("//div[@role='button' and @aria-label='Allow all cookies' and @tabindex='0']")
+                        )
+                );
 
-                if (!buttons.isEmpty()) {
-                    buttons.get(4).click();
-                }
+                acceptCookies.click();
+
             } catch (Exception e) {
                 // jeśli nie ma cookies - ignorujemy
             }
 
-            // Lista z inputami do Name, Surname i Email
-            List<WebElement> inputs = driver.findElements(
-                    By.xpath("//input[@type='text']")
+            WebElement firstName = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//label[text()='First name']/../input")
+                    )
             );
 
-            WebElement name = inputs.get(0);
-            WebElement surname = inputs.get(1);
-            WebElement email = inputs.get(2);
+            firstName.sendKeys("Jan");
 
-            name.sendKeys("Jan");
-            surname.sendKeys("Kowalski");
+            WebElement lastName = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//label[text()='Last name']/../input")
+                    )
+            );
+
+            lastName.sendKeys("Kowalski");
+
+            WebElement email = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//label[text()='Mobile number or email']/../input")
+                    )
+            );
+
             email.sendKeys("jan-kowalski-abc-123@gmail.com");
 
 
@@ -153,7 +165,7 @@ public class FacebookTestingApp {
             male.click();
 
         } finally {
-            driver.quit();
+//            driver.quit();
         }
     }
 }
